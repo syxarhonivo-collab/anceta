@@ -1,169 +1,562 @@
-[03.05.2026 15:52] 疼痛虽强, 但你的眼神更强大.: <!DOCTYPE html>
+[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Святая Мона Вьенн</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0, minimum-scale=0.5">
+  <title>Храм Света · Интерактивная притча</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+      background: #f8f5f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      transition: background 0.8s ease, color 0.5s ease;
+    }
+
+    /* тёмная тема применяется, когда много свечей погасло */
+    body.dim-theme {
+      background: #1e1a17;
+    }
+
+    .temple-container {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 10;
+      background: #e8e0d5;
+      background-image: radial-gradient(circle at 20% 30%, #f3efe7 5%, #d9ccb8 90%);
+      border-radius: 2.5rem;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.2), inset 0 0 60px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: background 0.6s ease, box-shadow 0.6s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dim-theme .temple-container {
+      background: #2a241f;
+      background-image: radial-gradient(circle at 20% 30%, #3e362e 5%, #1f1a16 90%);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.4);
+    }
+
+    /* Основной визуал — храмовая сцена */
+    .sanctuary {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* картинка храма – фоновый слой */
+    .temple-art {
+      position: absolute;
+      inset: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><path d="M120 380 L400 80 L680 380 L640 520 L160 520 Z" fill="%23b7a287" opacity="0.5"/><rect x="280" y="300" width="240" height="180" fill="%2399836b" opacity="0.4" rx="8"/><circle cx="400" cy="260" r="45" fill="%23e6c87c" opacity="0.25"/><path d="M320 380 L400 280 L480 380" fill="%23ccb285" opacity="0.35"/><rect x="160" y="460" width="80" height="100" fill="%23937b62" opacity="0.3" rx="4"/><rect x="560" y="460" width="80" height="100" fill="%23937b62" opacity="0.3" rx="4"/></svg>');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.35;
+      filter: sepia(0.3);
+      transition: opacity 0.6s ease, filter 0.5s;
+      pointer-events: none;
+    }
+
+    body.dim-theme .temple-art {
+      opacity: 0.25;
+      filter: sepia(0.6) brightness(0.7);
+    }
+
+    /* зона с интерактивными элементами */
+    .interactive-layer {
+      position: relative;
+      width: 85%;
+      height: 80%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    /* свечи — группа */
+    .candles-row {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .candle {
+      position: relative;
+      width: 30px;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s, filter 0.3s;
+    }
+
+    .candle:hover {
+      transform: scale(1.03);
+    }
+
+    .flame {
+      width: 20px;
+      height: 28px;
+      background: radial-gradient(circle at 50% 30%, #fae37c, #e08e2a);
+      border-radius: 50% 50% 40% 40%;
+      box-shadow: 0 0 18px #f9b826, 0 0 35px #f57c00;
+      margin-bottom: 2px;
+      transition: opacity 0.4s, transform 0.3s, box-shadow 0.4s;
+    }
+
+    .candle.extinguished .flame {
+      opacity: 0;
+      box-shadow: 0 0 2px #3a2e1e;
+      background: #5a4a32;
+    }
+
+    .wick {
+      width: 3px;
+      height: 8px;
+      background: #2e2e2e;
+      border-radius: 1px;
+    }
+[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: .candle-body {
+      width: 18px;
+      height: 36px;
+      background: linear-gradient(180deg, #f9f3e4 0%, #d9c094 90%);
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+      border: 1px solid #bba88c;
+    }
+
+    body.dim-theme .candle-body {
+      background: linear-gradient(180deg, #d9c7a7 0%, #8b7a5c 90%);
+    }
+
+    /* библия (книга) */
+    .bible-item {
+      position: relative;
+      width: 110px;
+      height: 85px;
+      background: #6b4e3d;
+      background: linear-gradient(145deg, #785e4a, #5a3e2c);
+      border-radius: 12px 20px 20px 12px;
+      box-shadow: 0 12px 18px rgba(0,0,0,0.3), inset -3px -3px 8px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 0.8rem;
+      border: 2px solid #c8aa7a;
+      font-size: 2.2rem;
+      color: #ecd59b;
+      text-shadow: 0 2px 5px black;
+      transform: rotate(1deg);
+    }
+
+    .bible-item:hover {
+      transform: rotate(0deg) scale(1.02);
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4), 0 0 20px #daa520;
+    }
+
+    /* подсказка */
+    .hint {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: #5e5344;
+      font-style: italic;
+      letter-spacing: 0.5px;
+      transition: color 0.4s;
+    }
+
+    body.dim-theme .hint {
+      color: #b9aa91;
+    }
+
+    /* оверлей с изображением и текстом */
+    .revelation-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 15, 10, 0.7);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+      border-radius: 2.5rem;
+    }
+
+    .revelation-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-box {
+      background: rgba(255, 250, 240, 0.92);
+      backdrop-filter: blur(12px);
+      max-width: 450px;
+      width: 85%;
+      max-height: 75%;
+      overflow-y: auto;
+      padding: 2rem 1.8rem;
+      border-radius: 2.5rem 1.5rem 2.5rem 1.5rem;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 2px #deb887;
+      font-family: 'Cormorant Garamond', serif;
+      color: #2e241a;
+      transition: background 0.3s;
+      position: relative;
+      border: 1px solid #c8a27a;
+      text-align: center;
+    }
+
+    body.dim-theme .scroll-box {
+      background: rgba(30, 25, 20, 0.92);
+      color: #efe3cd;
+      box-shadow: 0 0 35px #00000070, 0 0 0 2px #b59564;
+    }
+
+    .overlay-image {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 1.2rem;
+      border: 2px solid #c9aa7a;
+    }
+
+    .bible-text {
+      font-size: 1.25rem;
+      line-height: 1.7;
+      font-style: italic;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .page-indicator {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #5e4b34;
+      border-top: 1px dashed #baa78b;
+      padding-top: 0.7rem;
+    }
+
+    body.dim-theme .page-indicator {
+      color: #cbb295;
+    }
+
+    .close-btn {
+      margin-top: 1.2rem;
+      background: none;
+      border: 1px solid #b4946e;
+      color: #4f3b28;
+      padding: 0.4rem 1.8rem;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      background: rgba(230, 210, 180, 0.5);
+    }
+
+    body.dim-theme .close-btn {
+      color: #e5cfaa;
+      border-color: #c9a775;
+    }
+
+    .close-btn:hover {
+      background: #dbbd8b;
+      color: #231e15;
+    }
+
+    /* золотое свечение при касании */
+    .golden-glow {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, #f9e076 5%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: glowFade 0.8s ease-out forwards;
+      z-index: 100;
+    }
+[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: @keyframes glowFade {
+      0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.4); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+    }
+
+    /* счетчик потухших свечей */
+    .dim-counter {
+      font-size: 0.9rem;
+      color: #5c4e3a;
+      margin-top: 0.3rem;
+    }
+  </style>
 </head>
 <body>
-
-    <!-- ========== ЗОЛОТАЯ ПЫЛЬЦА ========== -->
-    <div class="particles" id="particles"></div>
-
-    <!-- ========== ГЛАВНЫЙ ЭКРАН: ХРАМ ========== -->
-    <div class="main-screen" id="mainScreen">
-        <div class="temple-wrapper">
-            <div class="temple-image">
-                <img src="photo6.jpg" alt="Храм">
-            </div>
-            <div class="vignette"></div>
-
-            <!-- Портрет справа -->
-            <div class="portrait-side">
-                <img src="photo2.jpg" alt="Святая Мона Вьенн">
-                <div class="portrait-frame"></div>
-            </div>
-
-            <!-- ИКОНА -->
-            <div class="hotspot hotspot-icon" onclick="openModal('modal-icon')" title="Икона">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Образ святой</span>
-            </div>
-
-            <!-- БИБЛИЯ -->
-            <div class="hotspot hotspot-bible" onclick="openModal('modal-bible')" title="Библия">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Священное писание</span>
-            </div>
-
-            <!-- СВЕЧИ -->
-            <div class="hotspot hotspot-candles" onclick="openCandles()" title="Свечи">
-                <div class="hotspot-dot"></div>
-                <span class="hotspot-label">Поминальные свечи</span>
-            </div>
-        </div>
+<div class="temple-container" id="templeContainer">
+  <div class="sanctuary">
+    <div class="temple-art"></div>
+    <div class="interactive-layer">
+      <div class="candles-row" id="candlesRow">
+        <!-- свечи генерируются js -->
+      </div>
+      <div class="bible-item" id="bibleTrigger">📖</div>
+      <div class="hint">коснитесь свечи · откройте книгу</div>
+      <div class="dim-counter" id="dimCounter"></div>
     </div>
 
-    <!-- ========== МОДАЛЬНОЕ ОКНО: ИКОНА ========== -->
-    <div class="overlay" id="modal-icon">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal('modal-icon')">✕</button>
-            <div class="modal-inner">
-                <h2 class="modal-title">Образ святой девы</h2>
-                <div class="modal-icon-image">
-                    <img src="photo4.jpg" alt="Икона">
-                </div>
-                <div class="modal-text">
-                    <p>Я помню её до мельчайших деталей. Иногда мне кажется, что память — это единственное, что у меня осталось, и я держусь за неё изо всех сил, прокручиваю в голове снова и снова, чтобы не забыть ни одной чёрточки, ни одного отблеска света в её волосах. Она стояла у окна в тот последний вечер, и закатное солнце падало на неё мягкими золотыми лучами, подсвечивая каждый локон. Её волосы были длинными, ниже плеч, уложенными в аккуратные золотисто-блондные кольца, которые обрамляли лицо и тяжёлыми, плотными завитками спадали на плечи. Я никогда не видел, чтобы кто-то носил такие сложные причёски в обычной жизни, но для неё это было естественно, это была часть её самой, её благородной, почти неестественной красоты, которую она несла с удивительной лёгкостью.</p>
-
-                    <p>Над головой возвышался декоративный венец — большой, тёплого золотого оттенка, с мелкими украшениями, бисером и крохотными камнями, которые искрились при малейшем движении. От венца спускалась тонкая вуаль из кружева, полупрозрачная, почти невесомая. Она колыхалась от дыхания и ложилась на плечи мягкой дымкой, и мне всё время хотелось протянуть руку и коснуться этой ткани. Но я не смел. Она казалась мне чем-то неземным, чем-то, что я мог потерять в любой момент, если сделаю неосторожное движение. Эта вуаль скрывала её черты лишь отчасти, делая лицо ещё более загадочным и прекрасным, и я помню, как сквозь неё проступали очертания её губ, когда она говорила. Она говорила тихо, но каждое слово ложилось мне в самое сердце.</p>
-[03.05.2026 15:52] 疼痛虽强, 但你的眼神更强大.: <p>Шею охватывал высокий кружевной воротник, жёсткий и изящный одновременно. Он подчёркивал её осанку, заставлял держать голову выше, и от этого её фигура казалась ещё более хрупкой и царственной. Поверх воротника лежало несколько длинных цепочек с крестами, медальонами и какими-то мелкими подвесками, смысл которых я никогда не спрашивал. Они свободно драпировались по груди, позвякивали при ходьбе, и этот звук до сих пор иногда мерещится мне в тишине пустых комнат. Я просыпаюсь от него среди ночи, но рядом никого нет, и только сердце колотится от тоски такой силы, что трудно дышать.</p>
-
-                    <p>Корсетная часть платья была кремовой, из атласа, с кружевной отделкой по краям. Я помню, как туго он стягивал её талию, делая фигуру почти неестественно изящной, как линии швов подчёркивали грудь и бока, как блестела ткань в закатном свете. Этот корсет был частью её, он держал её прямо, не давал сломаться, и она носила его так, будто он был даром свыше. Рукава её платья были широкими, объёмными, из полупрозрачной органзы, схваченные у запястий кружевными манжетами. Когда она двигала руками, они плыли по воздуху, и я видел, как сквозь ткань просвечивают её тонкие пальцы, затянутые в лёгкие перчатки. Одна рука всегда была чуть согнута у талии — изящная, благородная поза, исполненная такого достоинства, какого я не встречал больше ни в ком.</p>
-
-                    <p>Юбка была многослойной, и верхние слои из полупрозрачной ткани переливались в лучах солнца, а нижние лежали тяжёлыми складками. По подолу шли золотые цепочки, жемчужины, подвески, и всё это двигалось при каждом её шаге, создавая тихую, небесную музыку. Помню, как я смотрел на этот наряд и думал, что никогда не видел такой роскоши вблизи. Её платье было целым миром, полным сокровищ и тайн. Оно сияло. Везде, куда падал взгляд, блестело золото — цепочки, кресты, бисер, металлическая вышивка на корсаже.</p>
-
-                    <p>Я смотрел на неё и не мог наглядеться. Она была прекрасна. И когда она ушла, этот свет погас. Теперь я храню её образ в памяти, как драгоценность, которую боюсь потерять. Я пересказываю его себе перед сном, чтобы не забыть. И больше всего на свете я хочу, чтобы однажды она снова появилась передо мной такой, какой я запомнил её в тот последний миг. С золотыми локонами, с вуалью, колышущейся от дыхания, с мягкой улыбкой на губах, обращённой только ко мне. Не знаю, заслужил ли я это. Но я жду. И буду ждать, сколько бы времени ни прошло.</p>
-
-                    <p style="text-align: right; font-style: italic; margin-top: 1.5em;">Я скучаю, моя любовь...<br>Леон Дюмон</p>
-                </div>
-            </div>
-        </div>
+    <!-- оверлей для откровения -->
+    <div class="revelation-overlay" id="revelationOverlay">
+      <div class="scroll-box" id="scrollBox">
+        <img class="overlay-image" id="overlayImage" src="" alt="свечи">
+        <div class="bible-text" id="bibleText"></div>
+        <div class="page-indicator" id="pageIndicator"></div>
+        <button class="close-btn" id="closeOverlayBtn">Закрыть</button>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- ========== МОДАЛЬНОЕ ОКНО: БИБЛИЯ ========== -->
-    <div class="overlay" id="modal-bible">
-        <div class="modal modal-bible">
-            <button class="modal-close" onclick="closeModal('modal-bible')">✕</button>
-            <div class="modal-inner">
-                <div class="bible-icon-top">
-                    <img src="photo5.jpg" alt="Библия">
-                </div>
-                <h2 class="modal-title">Житие святой Моны Вьенн</h2>
-                <div class="modal-text">
+<script>
+  (function() {
+    // --- СОСТОЯНИЕ ---
+    const totalCandles = 7;
+    let extinguishedCount = 0;
+    // массив состояния свечей: true = горит
+    let candlesState = new Array(totalCandles).fill(true);
 
-                    <h3 class="chapter-title">Часть первая: Избрание</h3>
+    // тексты для свечей (библейский стиль)
+    const candleTexts = [
+      "И сказал Господь: да будет свет. И стал свет. И увидел Бог свет, что он хорош.",
+      "Светильник для тела есть око. Если око твоё будет чисто, то всё тело твоё будет светло.",
+      "Я свет миру; кто последует за Мною, тот не будет ходить во тьме, но будет иметь свет жизни.",
+      "И свет во тьме светит, и тьма не объяла его.",
+      "Ты возжигаешь светильник мой, Господи; Бог мой просвещает тьму мою.",
+      "Слово Твоё — светильник ноге моей и свет стезе моей.",
+      "И ночи не будет там, и не будут иметь нужды ни в светильнике, ни в свете солнечном, ибо Господь Бог освещает их."
+    ];
 
-                    <p>И была в те дни в народе великая смута, ибо сердца людские ожесточились, а вера их истончилась, как ветхая ткань. Никто не внимал речам жрецов, и храмы стояли пусты, и голоса молящихся не возносились к небесам. Тогда собрались старейшие из жриц и держали совет меж собою, говоря: «Народ наш блуждает во тьме, и нет ему утешения. Надобно избрать ту, что станет светочем для заблудших, ту, чья чистота растопит лёд в очерствевших душах».</p>
+    // Для книги (библии) несколько страниц
+    const biblePages = [
+      { text: "В начале было Слово, и Слово было у Бога, и Слово было Бог. Всё чрез Него начало быть...", img: "https://placehold.co/400x180/e6d5b8/2e241a?text=Свеча+Слова" },
+      { text: "Ибо так возлюбил Бог мир, что отдал Сына Своего Единородного, дабы всякий верующий в Него не погиб, но имел жизнь вечную.", img: "https://placehold.co/400x180/d9c29e/2e241a?text=Свет+Евангелия" },
+      { text: "Верующий в Сына имеет жизнь вечную, а не верующий в Сына не увидит жизни, но гнев Божий пребывает на нём.", img: "https://placehold.co/400x180/c8aa7a/1e1810?text=Истина" },
+      { text: "И познаете истину, и истина сделает вас свободными.", img: "https://placehold.co/400x180/b59564/1a130c?text=Свобода" }
+    ];
+    let currentBiblePage = 0;
 
-                    <p>И пошли они по городам и весям, разыскивая деву непорочную, чей лик был бы кроток, а сердце — исполнено любви ко всему живому. Долго искали они и наконец пришли в малый дом на окраине селения, где жила юная дева. Волосы её были длинны и темны, спадали ниже плеч прямыми прядями, а кожа хранила отпечаток солнца.
-[03.05.2026 15:52] 疼痛虽强, 但你的眼神更强大.: Глаза её, карие и глубокие, смотрели на мир с тихой мудростью, не свойственной её возрасту. Она не знала зла и не держала обид, помогала немощным и кормила голодных, не прося ничего взамен. Жрицы узрели в ней благодать истинную и сказали ей: «Избрана ты, дабы стать святой заступницей пред лицом Всевышнего. Через тебя народ обретёт прощение и веру».</p>
+    // DOM элементы
+    const candlesRow = document.getElementById('candlesRow');
+    const dimCounter = document.getElementById('dimCounter');
+    const body = document.body;
+    const overlay = document.getElementById('revelationOverlay');
+    const overlayImage = document.getElementById('overlayImage');
+    const bibleTextEl = document.getElementById('bibleText');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const closeBtn = document.getElementById('closeOverlayBtn');
+    const bibleTrigger = document.getElementById('bibleTrigger');
 
-                    <p>Дева смутилась и опустила взор, ибо не искала она славы и не желала возвышения над другими. Но сердце её, полное сострадания к страждущим, не позволило ей отказаться. «Да будет так, как угодно Господу и вам, служительницы Его», — ответила она смиренно и склонила голову, принимая судьбу свою, ещё не ведая, какою ценою будет куплено спасение народа.</p>
+    // --- вспомогательные функции ---
+    function updateUIExtinguished() {
+      extinguishedCount = candlesState.filter(state => state === false).length;
+      // обновляем счётчик
+      dimCounter.textContent = extinguishedCount > 0 ? 🕯️ погасших: ${extinguishedCount}/${totalCandles} : '';
 
-                    <div class="divider">✧</div>
+      // применяем тёмную тему, если погасло больше половины
+      if (extinguishedCount >= Math.ceil(totalCandles / 2)) {
+        body.classList.add('dim-theme');
+      } else {
+        body.classList.remove('dim-theme');
+      }
+[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: // обновляем визуал каждой свечи
+      document.querySelectorAll('.candle').forEach((candleEl, index) => {
+        if (candlesState[index]) {
+          candleEl.classList.remove('extinguished');
+        } else {
+          candleEl.classList.add('extinguished');
+        }
+      });
+    }
 
-                    <h3 class="chapter-title">Часть вторая: Любовь невысказанная</h3>
+    // золотое свечение по координатам
+    function spawnGoldenGlow(x, y) {
+      const glow = document.createElement('div');
+      glow.className = 'golden-glow';
+      glow.style.left = x + 'px';
+      glow.style.top = y + 'px';
+      document.getElementById('templeContainer').appendChild(glow);
+      setTimeout(() => {
+        glow.remove();
+      }, 800);
+    }
 
-                    <p>Жил в том же селении юноша по имени Леон Дюмон. Был он ремесленником искусным, и руки его умели создавать вещи прекрасные из простого дерева и камня. Но прекраснее всех творений его была любовь, которую питал он к избранной деве. С той поры, как впервые увидел он её у колодца на закате дня, сердце его уже не принадлежало ему. Каждый раз, встречая её взгляд, он чувствовал, как немеет язык его, а слова, что он готовил дни напролёт, рассыпались прахом.</p>
+    // показать оверлей с картинкой и текстом
+    function showOverlay(imageUrl, text, pageInfo = null) {
+      overlayImage.src = imageUrl;
+      bibleTextEl.textContent = text;
+      if (pageInfo) {
+        pageIndicator.textContent = pageInfo;
+      } else {
+        pageIndicator.textContent = '';
+      }
+      overlay.classList.add('active');
+    }
 
-                    <p>Он приходил к её дому под предлогом починить покосившуюся дверь или подправить протекающую крышу. Он оставлял скромные дары у порога — то пучок полевых цветов, то свежеиспечённый хлеб, то малую иконку, вырезанную собственными руками. Но сказать о главном он всё не решался, откладывая признание на завтра, на послезавтра, на тот день, когда наберётся достаточно смелости. А дни те утекали, как вода сквозь пальцы, и Леон не ведал, что времени ему отпущено куда меньше, чем он мнил.</p>
+    function hideOverlay() {
+      overlay.classList.remove('active');
+      // сброс страницы библии при закрытии
+      currentBiblePage = 0;
+    }
 
-                    <p>Когда же узнал он, что деву избрали жрицы для великого служения, грудь его стеснилась от предчувствия беды. Он хотел броситься к ней, упасть на колени и сказать наконец то, что жгло его изнутри долгие месяцы. Хотел просить её остаться, отказаться от избрания, выбрать жизнь простую и земную — с ним, с Леоном, который любил её больше самой жизни. Но ноги его словно приросли к земле, а голос пропал, и он лишь стоял в толпе, глядя, как уводят её жрицы в белых одеяниях. Она обернулась на мгновение, нашла его глазами в море лиц и едва заметно улыбнулась — грустно и тепло. Эта улыбка навсегда врезалась в его память, став самой горькой и самой драгоценной из всех воспоминаний.</p>
+    // обработчик касания свечи
+    function handleCandleClick(index, event) {
+      // золотое свечение
+      const rect = event.currentTarget.getBoundingClientRect();
+      const containerRect = document.getElementById('templeContainer').getBoundingClientRect();
+      const relativeX = rect.left + rect.width/2 - containerRect.left;
+      const relativeY = rect.top + rect.height/2 - containerRect.top;
+      spawnGoldenGlow(relativeX, relativeY);
 
-                    <div class="divider">✧</div>
+      // показать текст свечи (всегда один и тот же для этой свечи)
+      const imageUrl = "https://placehold.co/400x180/f5e7d3/3a2c1c?text=Свеча+Храма"; // можно заменить на свою
+      showOverlay(imageUrl, candleTexts[index]);
 
-                    <h3 class="chapter-title">Часть третья: Жертвоприношение и вечная молитва</h3>
+      // потушить эту свечу (если ещё горит)
+      if (candlesState[index] === true) {
+        candlesState[index] = false;
+        updateUIExtinguished();
+      }
+      // если уже потушена – просто показываем текст, свечение было
+    }
 
-                    <p>И свершилось предначертанное. В день священного обряда облачили деву в белые ризы, расшитые серебряными нитями, и возложили на голову её венок из белых лилий. Она шла к алтарю босая, и народ расступался пред нею, падая на колени. Жрицы возносили молитвы, и голоса их звучали торжественно и скорбно одновременно. Сама же дева хранила молчание, и лишь губы её едва шевелились, шепча слова последней молитвы — не за себя, но за всех, кто пришёл смотреть на её исход.</p>
+    // --- построение свечей ---
+    function renderCandles() {
+      candlesRow.innerHTML = '';
+      for (let i = 0; i < totalCandles; i++) {
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        if (!candlesState[i]) {
+          candle.classList.add('extinguished');
+        }
+        candle.innerHTML = 
+          <div class="flame"></div>
+          <div class="wick"></div>
+          <div class="candle-body"></div>
+        ;
+        candle.addEventListener('click', (e) => handleCandleClick(i, e));
+        candlesRow.appendChild(candle);
+      }
+    }
 
-                    <p>Ритуальное принесение в жертву было чисто и строго, как того требовал древний церковный чин. Никто не услышал от неё ни крика, ни стона. Она приняла смерть с тем же смирением, с каким жила, и душа её отделилась от тела легко, словно лепесток, подхваченный ветром. И в тот самый миг, когда сердце её остановилось, небеса разверзлись и пролился на землю благодатный свет.</p>
+    // --- логика библии (книги) ---
+    function openBible() {
+      currentBiblePage = 0;
+      const page = biblePages[currentBiblePage];
+      showOverlay(page.img, page.text, страница ${currentBiblePage + 1} / ${biblePages.length});
+    }
 
-                    <p>Народ, потрясённый увиденным, уверовал вновь, и храмы наполнились молящимися.</p>
+    // пролистывание страниц внутри оверлея (по клику на текст или скролл вниз)
+    function nextBiblePage() {
+      if (!overlay.classList.contains('active')) return;
+      // проверяем, что сейчас открыта библия (можно по индикатору страниц)
+      if (pageIndicator.textContent.includes('страница')) {
+        if (currentBiblePage < biblePages.length - 1) {
+          currentBiblePage++;
+          const page = biblePages[currentBiblePage];
+          overlayImage.src = page.img;
+          bibleTextEl.textContent = page.text;
+          pageIndicator.textContent = страница ${currentBiblePage + 1} / ${biblePages.length};
+          // небольшое золотое свечение в центре
+          const container = document.getElementById('templeContainer');
+          const rect = container.getBoundingClientRect();
+          const cx = rect.width/2;
+          const cy = rect.height/2;
+          spawnGoldenGlow(cx, cy);
+        }
+      }
+    }
+[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: // Обработчик клика по библии
+    bibleTrigger.addEventListener('click', (e) => {
+      const rect = bibleTrigger.getBoundingClientRect();
+      const containerRect = document.getElementById('templeContainer').getBoundingClientRect();
+      const relX = rect.left + rect.width/2 - containerRect.left;
+      const relY = rect.top + rect.height/2 - containerRect.top;
+      spawnGoldenGlow(relX, relY);
+      openBible();
+    });
 
-                    <p>Ныне же она пребывает в чертогах небесных святым духом, помогая тем, кто взывает к ней в час нужды. Она слышит каждую молитву, каждую просьбу о прощении, и ходатайствует пред Господом за грешников неразумных.</p>
-[03.05.2026 15:52] 疼痛虽强, 但你的眼神更强大.: <p>Леон Дюмон не женился и не познал иной любви до конца дней своих. В доме его, над малым алтарём, стоит икона с её ликом — тем самым, что он вырезал когда-то дрожащими от любви руками. Каждый вечер он зажигает пред образом свечу и шепчет молитву, ту самую, единственную: «Святая дева, прости, что не сказал тебе главного. Прости, что не уберёг. Будь со мною в час мой последний, как я с тобою — в каждый час земного бытия».</p>
+    // Закрытие оверлея
+    closeBtn.addEventListener('click', hideOverlay);
 
-                    <p>А она, взирая на него из горних высей, чувствует, как сжимается её бестелесное сердце от боли невыразимой. Боль эта — не за себя, но за него, оставшегося там, в мире живых, пленником своей невысказанной любви. Она видит каждую его слезу, слышит каждый вздох и тянется к нему незримым лучом света, но не может коснуться, ибо разделяет их великая пропасть между жизнью вечной и земным существованием. И всё же она верит, искренне и глубоко, что страдание это не напрасно. Что её жертва и его верность однажды помогут людям простить всё — и предательство, и жестокость, и неверие. Она ждёт того дня, когда все долги будут уплачены и все грехи отпущены. И в этом ожидании, полном тихой, святой печали, пребывает она вечно, храня в своём призрачном сердце и первую любовь, и последнюю.</p>
+    // Дополнительно: клик по оверлею вне скролл-бокса закрывает
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        hideOverlay();
+      }
+    });
 
-                </div>
-            </div>
-        </div>
-    </div>
+    // Пролистывание страниц библии: клик по тексту или двойной тап / свайп вниз (используем wheel и touch)
+    const scrollBox = document.getElementById('scrollBox');
+    scrollBox.addEventListener('click', (e) => {
+      // если клик по тексту или изображению (не по кнопке)
+      if (e.target !== closeBtn && overlay.classList.contains('active')) {
+        nextBiblePage();
+      }
+    });
 
-    <!-- ========== СЦЕНА СВЕЧЕЙ ========== -->
-    <div class="candles-scene" id="candlesScene">
-        <div class="candles-background">
-            <img src="photo3.jpg" alt="Свечи">
-        </div>
-        <div class="candles-darken" id="candlesDarken"></div>
+    // также колесо мыши для пролистывания (если внутри скролл-бокса)
+    scrollBox.addEventListener('wheel', (e) => {
+      if (overlay.classList.contains('active') && pageIndicator.textContent.includes('страница')) {
+        e.preventDefault();
+        if (e.deltaY > 15) {
+          nextBiblePage();
+        }
+      }
+    }, { passive: false });
 
-        <div class="candles-row" id="candlesRow">
-            <div class="candle-hitbox" data-candle="1" onclick="showCandleInfo(1)">
-                <div class="candle-info" id="candleInfo1">Её имя было Мона Вьенн</div>
-            </div>
-            <div class="candle-hitbox" data-candle="2" onclick="showCandleInfo(2)">
-                <div class="candle-info" id="candleInfo2">Два коротких слога — как вздох</div>
-            </div>
-            <div class="candle-hitbox" data-candle="3" onclick="showCandleInfo(3)">
-                <div class="candle-info" id="candleInfo3">Мать услышала имя во сне</div>
-            </div>
-            <div class="candle-hitbox" data-candle="4" onclick="showCandleInfo(4)">
-                <div class="candle-info" id="candleInfo4">Двадцать один год</div>
-            </div>
-            <div class="candle-hitbox" data-candle="5" onclick="showCandleInfo(5)">
-                <div class="candle-info" id="candleInfo5">Жизнь оборвалась на полувздохе</div>
-            </div>
-            <div class="candle-hitbox" data-candle="6" onclick="showCandleInfo(6)">
-                <div class="candle-info" id="candleInfo6">Принесена в жертву</div>
-            </div>
-            <div class="candle-hitbox" data-candle="7" onclick="showCandleInfo(7)">
-                <div class="candle-info" id="candleInfo7">Нарекли святой посмертно</div>
-            </div>
-            <div class="candle-hitbox" data-candle="8" onclick="showCandleInfo(8)">
-                <div class="candle-info" id="candleInfo8">Святость из предательства</div>
-            </div>
-            <div class="candle-hitbox" data-candle="9" onclick="showCandleInfo(9)">
-                <div class="candle-info" id="candleInfo9">Прощение</div>
-            </div>
-        </div>
+    // touch свайп вниз для мобильных
+    let touchStartY = 0;
+    scrollBox.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    });
+    scrollBox.addEventListener('touchend', (e) => {
+      if (!overlay.classList.contains('active')) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchStartY - touchEndY;
+      if (diff > 30 && pageIndicator.textContent.includes('страница')) {
+        nextBiblePage();
+      }
+    });
 
-        <div class="scroll-hint" id="scrollHint">↓ Листай ниже ↓</div>
-        <button class="return-to-temple" id="returnBtn" onclick="closeCandles()">Вернуться в храм</button>
-    </div>
+    // Инициализация
+    renderCandles();
+    updateUIExtinguished();
 
-    <script src="script.js"></script>
+    // Дополнительно: если все свечи потушены, экран максимально тёмный
+    // уже через dim-theme
+  })();
+</script>
 </body>
 </html>
