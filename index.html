@@ -1,4 +1,4 @@
-[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -137,7 +137,7 @@
       background: #2e2e2e;
       border-radius: 1px;
     }
-[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: .candle-body {
+    candle-body {
       width: 18px;
       height: 36px;
       background: linear-gradient(180deg, #f9f3e4 0%, #d9c094 90%);
@@ -301,7 +301,7 @@
       animation: glowFade 0.8s ease-out forwards;
       z-index: 100;
     }
-[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: @keyframes glowFade {
+@keyframes glowFade {
       0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.4); }
       100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
     }
@@ -390,7 +390,7 @@
       } else {
         body.classList.remove('dim-theme');
       }
-[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: // обновляем визуал каждой свечи
+// обновляем визуал каждой свечи
       document.querySelectorAll('.candle').forEach((candleEl, index) => {
         if (candlesState[index]) {
           candleEl.classList.remove('extinguished');
@@ -497,7 +497,7 @@
         }
       }
     }
-[03.05.2026 16:12] 疼痛虽强, 但你的眼神更强大.: // Обработчик клика по библии
+// Обработчик клика по библии
     bibleTrigger.addEventListener('click', (e) => {
       const rect = bibleTrigger.getBoundingClientRect();
       const containerRect = document.getElementById('templeContainer').getBoundingClientRect();
